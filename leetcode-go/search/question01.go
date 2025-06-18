@@ -1,7 +1,7 @@
 package search
 
 import (
-	"fmt"
+	"math/rand"
 	"slices"
 	"sort"
 )
@@ -130,14 +130,10 @@ func kWeakestRows(mat [][]int, k int) []int {
 }
 
 func findKthLargest(nums []int, k int) int {
-
-	a := quickSelect(nums, 0, len(nums)-1, k)
-	fmt.Println(nums)
-	return a
+	return findKthLargestHelper(nums, 0, len(nums)-1, k-1)
 }
-
-func quickSelect(nums []int, left, right, k int) int {
-
+// leetcode 构选的测试集会运行超时
+func findKthLargestHelper(nums []int, left, right, k int) int {
 	if left == right {
 		return nums[left]
 	}
@@ -145,21 +141,24 @@ func quickSelect(nums []int, left, right, k int) int {
 	if k == pIndex {
 		return nums[k]
 	} else if k < pIndex {
-		return quickSelect(nums, left, pIndex-1, k)
+		return findKthLargestHelper(nums, left, pIndex-1, k)
 	} else {
-		return quickSelect(nums, pIndex+1, right, k)
+		return findKthLargestHelper(nums, pIndex+1, right, k)
 	}
 
 }
-func partition(nums []int, left, right int) int {
-	pivot := nums[right]
-	i := left
-	for j := left; j < right; j++ {
-		if nums[j] > pivot {
-			nums[i], nums[j] = nums[j], nums[i]
+func partition(arr []int, low, high int) int {
+	rIdx := rand.Intn(high-low+1) + low
+	arr[high], arr[rIdx] = arr[rIdx], arr[high]
+	pivot := arr[high]
+
+	i := low - 1
+	for j := low; j < high; j++ {
+		if arr[j] >= pivot {
 			i++
+			arr[i], arr[j] = arr[j], arr[i]
 		}
 	}
-	nums[i], nums[right] = nums[right], nums[i]
-	return i
+	arr[i+1], arr[high] = arr[high], arr[i+1]
+	return i + 1
 }
