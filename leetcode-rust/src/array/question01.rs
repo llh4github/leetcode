@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     let mut map = HashMap::new();
@@ -15,6 +15,43 @@ fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     vec![]
 }
 
+fn longest_common_prefix(strs: Vec<String>) -> String {
+    if strs.len() == 0 {
+        return String::new();
+    }
+
+    let min_len = strs.iter().map(|s| s.len()).min();
+    if let Some(0) = min_len {
+        return String::new();
+    }
+
+    let min_len = min_len.unwrap();
+    let mut count = 0;
+    let first = strs[0].clone();
+    for i in 0..min_len {
+        let tmp_size = strs
+            .iter()
+            .map(|s| s.as_bytes())
+            .map(|arr| arr[i])
+            .collect::<HashSet<_>>()
+            .len();
+        if tmp_size != 1 {
+            if count == 0 {
+                return String::new();
+            } else {
+                let tmp = first.get(0..count).unwrap();
+                return String::from(tmp);
+            }
+        }
+        count += 1;
+    }
+    if count == 0 {
+        return String::new();
+    } else {
+        let tmp = first.get(0..count).unwrap();
+        return String::from(tmp);
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -26,6 +63,16 @@ mod tests {
     fn test_two_sum(#[case] input: Vec<i32>, #[case] target: i32, #[case] want: Vec<i32>) {
         let mut ans = two_sum(input, target);
         ans.sort();
+        assert_eq!(want, ans)
+    }
+
+    #[rstest]
+    #[case(vec!["flower","flow","flight"], "fl".to_string())]
+    #[case(vec!["dog","racecar","car"], "".to_string())]
+    #[case(vec!["a"], "a".to_string())]
+    fn test_longest_common_prefix(#[case] input: Vec<&str>, #[case] want: String) {
+        let strs = input.into_iter().map(|s| s.to_string()).collect();
+        let ans = longest_common_prefix(strs);
         assert_eq!(want, ans)
     }
 }
