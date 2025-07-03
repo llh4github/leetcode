@@ -32,6 +32,22 @@ fn longest_common_prefix(strs: Vec<String>) -> String {
 
     first[..min_len].to_string()
 }
+
+fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
+    if nums.is_empty() {
+        return 0;
+    }
+
+    let mut slow = 1;
+    for fast in 1..nums.len() {
+        if nums[fast] != nums[fast - 1] {
+            nums[slow] = nums[fast];
+            slow += 1;
+        }
+    }
+    return slow as i32;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
