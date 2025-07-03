@@ -16,41 +16,21 @@ fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
 }
 
 fn longest_common_prefix(strs: Vec<String>) -> String {
-    if strs.len() == 0 {
+    if strs.is_empty() {
         return String::new();
     }
 
-    let min_len = strs.iter().map(|s| s.len()).min();
-    if let Some(0) = min_len {
-        return String::new();
-    }
+    let first = &strs[0];
+    let min_len = strs.iter().map(|s| s.len()).min().unwrap_or(0);
 
-    let min_len = min_len.unwrap();
-    let mut count = 0;
-    let first = strs[0].clone();
     for i in 0..min_len {
-        let tmp_size = strs
-            .iter()
-            .map(|s| s.as_bytes())
-            .map(|arr| arr[i])
-            .collect::<HashSet<_>>()
-            .len();
-        if tmp_size != 1 {
-            if count == 0 {
-                return String::new();
-            } else {
-                let tmp = first.get(0..count).unwrap();
-                return String::from(tmp);
-            }
+        let byte = first.as_bytes()[i];
+        if !strs[1..].iter().all(|s| s.as_bytes()[i] == byte) {
+            return first[..i].to_string();
         }
-        count += 1;
     }
-    if count == 0 {
-        return String::new();
-    } else {
-        let tmp = first.get(0..count).unwrap();
-        return String::from(tmp);
-    }
+
+    first[..min_len].to_string()
 }
 #[cfg(test)]
 mod tests {
