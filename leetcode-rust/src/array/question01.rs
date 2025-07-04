@@ -67,6 +67,36 @@ fn search_insert(nums: Vec<i32>, target: i32) -> i32 {
     return idx as i32;
 }
 
+// https://leetcode.cn/problems/plus-one
+fn plus_one(digits: Vec<i32>) -> Vec<i32> {
+    let mut has_ten = false;
+    let size = digits.len();
+
+    let mut ans: Vec<i32> = vec![0; size + 1];
+    for x in (0..size).rev() {
+        let mut tmp = if has_ten {
+            has_ten = false;
+            digits[x] + 1
+        } else {
+            digits[x]
+        };
+        if x == size - 1 {
+            tmp += 1;
+        }
+        if tmp >= 10 {
+            has_ten = true;
+            tmp = tmp - 10;
+        }
+        ans[x + 1] = tmp as i32;
+    }
+    if has_ten {
+        ans[0] = 1;
+        return ans;
+    } else {
+        return ans[1..].to_vec();
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -96,6 +126,14 @@ mod tests {
     #[case(vec![1,3,5,6], 2,1)]
     fn test_search_insert(#[case] input: Vec<i32>, #[case] target: i32, #[case] want: i32) {
         let ans = search_insert(input, target);
+        assert_eq!(want, ans)
+    }
+
+    #[rstest]
+    #[case(vec![1,3,5,6],vec![1,3,5,7])]
+    #[case(vec![9],vec![1,0])]
+    fn test_plus_one(#[case] input: Vec<i32>, #[case] want: Vec<i32>) {
+        let ans = plus_one(input);
         assert_eq!(want, ans)
     }
 }
