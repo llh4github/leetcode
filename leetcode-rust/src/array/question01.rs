@@ -48,6 +48,25 @@ fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
     return slow as i32;
 }
 
+// 居然内存占用排在末尾
+// https://leetcode.cn/problems/search-insert-position
+fn search_insert(nums: Vec<i32>, target: i32) -> i32 {
+    let mut left = 0;
+    let mut right = nums.len();
+    let mut mid = (left + right) / 2;
+    let mut idx = right;
+    while left < right {
+        if target > nums[mid] {
+            left = mid + 1;
+        } else {
+            idx = std::cmp::min(idx, mid);
+            right = mid;
+        }
+        mid = (left + right) / 2;
+    }
+    return idx as i32;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -69,6 +88,14 @@ mod tests {
     fn test_longest_common_prefix(#[case] input: Vec<&str>, #[case] want: String) {
         let strs = input.into_iter().map(|s| s.to_string()).collect();
         let ans = longest_common_prefix(strs);
+        assert_eq!(want, ans)
+    }
+
+    #[rstest]
+    #[case(vec![1,3,5,6], 5,2)]
+    #[case(vec![1,3,5,6], 2,1)]
+    fn test_search_insert(#[case] input: Vec<i32>, #[case] target: i32, #[case] want: i32) {
+        let ans = search_insert(input, target);
         assert_eq!(want, ans)
     }
 }
